@@ -2,17 +2,16 @@ package main
 
 import (
 	"crypto/rand"
+	"encoding/binary"
 	"flag"
 	"fmt"
-	"math/big"
 )
 
 func main() {
-	fmt.Println("generate da passwords")
 	numbers := flag.Bool("n", false, "Include numbers in the password")
 	capitals := flag.Bool("c", false, "Include capital letters in the password")
 	symbols := flag.Bool("s", false, "Include symbols in the password")
-	length := flag.Int("l", 12, "Length of the password")
+	length := flag.Int64("l", 12, "Length of the password")
 
 	flag.Parse()
 
@@ -34,15 +33,21 @@ func main() {
 		}
 	}
 
-	for i := range *length {
-		randomInt, err := rand.Int(rand.Reader, big.NewInt(int64(len(inclCharacters))))
-		if err != nil {
-			fmt.Println("Error while generating random characters")
-			return
-		}
-		fmt.Println("Counter:", i)
-		fmt.Println(randomInt)
+	for range *length {
+		randomIndex, _ := genRandomIndex(len(inclCharacters))
+		fmt.Printf("%c", inclCharacters[randomIndex])
 	}
-	fmt.Println(inclCharacters)
-	//bs above to be changed, just learnin
+	fmt.Println()
+
+}
+
+func genRandomIndex(n int) (int, error) {
+	var randomBytes [4]byte
+	_, err := rand.Read(randomBytes[:])
+	if err != nil {
+		return 0, err
+	}
+
+	randomValue := int(binary.LittleEndian.Uint32(randomBytes[:]))
+	return randomValue % n, nil
 }
