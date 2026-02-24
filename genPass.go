@@ -19,7 +19,7 @@ func main() {
 	inclNumbers := "0123456789"
 	inclUpperCase := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	inclSymbols := "!@#$%^&*()"
-	//generatedPassword := ""
+	generatedPassword := ""
 
 	appliedFlags := map[*bool]string{
 		numbers:  inclNumbers,
@@ -35,9 +35,10 @@ func main() {
 
 	for range *length {
 		randomIndex, _ := genRandomIndex(len(inclCharacters))
-		fmt.Printf("%c", inclCharacters[randomIndex])
+		generatedPassword += string(inclCharacters[randomIndex])
 	}
-	fmt.Println()
+
+	fmt.Println(generatedPassword)
 
 }
 
